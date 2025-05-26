@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Simulamos un login exitoso
     if ($usuario == "admin" && $password == "1234") {
         // Redirigir al siguiente formulario
-        header("Location: RegisterHR.html");
+        header("Location: ../pantallas/RegisterHR.html");
         exit;
     } else {
         // Si falla, puedes redirigir a otra página o mostrar mensaje
