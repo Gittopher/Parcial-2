@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 2em;
+    align-items: center;
+}
+
+/* Contenedor principal del formulario: horizontal, centrado, con fondo y sombra */
+.form-container {
+    display: flex;
+    flex-direction: row;
+    background: #ffffff;
+    padding: 1em 2em;
+    max-width: 900px;
+    margin: 0 auto 2em; /* centrado horizontalmente */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    align-items: center;
+    gap: 1em;
+}
+
+
+/* Inputs y botón en línea, tamaño flexible */
+input, button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+/* Inputs con ancho fijo para que no sean muy anchos */
+input {
+    width: 200px;
+}
+
+/* Botón con tamaño fijo y destacado */
+button {
+    width: auto;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.cards-container {
+    max-width: 800px;
+    margin: 3em auto;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    justify-content: center;
+}
+
+.card {
+    background: white;
+    padding: 1em;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    width: 250px;
+}
+
+.btnEliminar {
+    background-color: #dc3545;
+    color: white;
+    margin-top: 1em;
+}
