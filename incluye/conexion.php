@@ -2,7 +2,7 @@
 $host = "localhost";
 $usuario = "root";
 $contrasena = ""; // sin contraseña por defecto en XAMPP
-$base_datos = "sistemaaspirantes"; // Cambia esto por el nombre real
+$base_datos = "registro_aspirantes"; // Cambia esto por el nombre real
 
 $conexion = new mysqli($host, $usuario, $contrasena, $base_datos);
 

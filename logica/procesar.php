@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt_insert->execute()) {
         echo "Usuario registrado con éxito.";
-        header("Location: /Parcial-2/pantallas/RegisterHR.php"); // Redirigir a la pantalla de registro de RH
+        header("Location: ../Parcial2/pantallas/RegisterHR.html"); // Redirigir a la pantalla de registro de RH
         // Puedes redirigir a login u otra página aquí:
         // header("Location: ../pantallas/Login.html");
         // exit;

@@ -6,5 +6,6 @@
         "pantallas",
         "Parcial",
         "procesar"
-    ]
+    ],
+    "bitoAI.codeCompletion.enableAutoCompletion": false
 }

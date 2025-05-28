@@ -27,6 +27,6 @@
         <div class="cards" id="tarjetas"></div>
     </div>
 
-    <script src="../scripts/gestionRH.js"></script>
+    <script src="../assets/gestionRH.js"></script>
 </body>
 </html>
