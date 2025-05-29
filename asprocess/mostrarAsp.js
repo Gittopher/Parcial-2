@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("../logica/procesarAspirante.php")
+    fetch("procesarAspirante.php")
         .then(response => response.json())
         .then(data => {
             if (data.error) {
