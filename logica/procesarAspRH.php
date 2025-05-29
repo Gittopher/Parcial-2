@@ -4,7 +4,7 @@ require_once '../incluye/conexion.php';
 
 // Registrar info de aspirantes en su postulación
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['registro']) && $_POST['registro'] === "true") { // 👈 Asegura que es un registro
+    if (isset($_POST['registro']) && $_POST['registro'] === "true") { // Asegura que es un registro
         $cedula = trim($_POST['cedula']);
         $nombre = trim($_POST['nombre']);
         $apellido = trim($_POST['apellido']);
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->execute()) {
             echo json_encode(["success" => "Solicitud enviada correctamente"]);
-            header("Location: ../pantallas/InfoAsp.html"); // 👈 Redirige después de un registro exitoso
+            header("Location: http://localhost/Parcial2/pantallas/InfoAsp.html"); 
             exit;
         } else {
             echo json_encode(["error" => "Error al registrar aspirante"]);

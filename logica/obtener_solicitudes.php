@@ -7,11 +7,11 @@ ini_set('display_errors', 1);
 header('Content-Type: application/json');
 
 // Incluye el archivo de conexión a la base de datos
-require_once '/xampp/htdocs/Parcial2/incluye/conexion.php'; // Asegúrate de que el nombre y la ruta sean correctos
+require_once '../incluye/conexion1.php'; // Asegúrate de que el nombre y la ruta sean correctos
 
 try {
     // Consulta SQL para obtener los datos necesarios de la tabla usuarios
-    $sql = "SELECT id, nombre, apellido, fecha_registro, estado_solicitud FROM usuarios";
+    $sql = "SELECT id, nombre_usuario, correo, contrasena, rol, fecha_creacion FROM usuarios";
     
     // Prepara la consulta
     $stmt = $conn->prepare($sql);
@@ -26,9 +26,8 @@ try {
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $solicitudes[] = [
             'id'     => $row['id'],
-            'nombre' => $row['nombre'] . ' ' . $row['apellido'],
-            'fecha'  => $row['fecha_registro'],
-            'estado' => $row['estado_solicitud']
+            'nombre' => $row['nombre_usuario'],
+            'fecha'  => $row['fecha_creacion'],
         ];
     }
 

@@ -1,30 +1,49 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 header('Content-Type: application/json');
-require_once '../conexion.php'; // Ajusta el nombre del archivo de conexion con la BD !!!
 
+require_once '../incluye/conexion1.php'; 
 
+// Recibe el JSON del frontend
+$input = file_get_contents("php://input");
+$data = json_decode($input, true);
 
-
-$data = json_decode(file_get_contents("php://input"), true);
-
-if (!isset($data['id']) || !isset($data['estado'])) {
-    echo json_encode(['success' => false, 'message' => 'Datos incompletos']);
+// Validación
+if (!$data || !isset($data['id'], $data['estado'], $data['comentarios'])) {
+    echo json_encode([
+        "success" => false,
+        "mensaje" => "Datos incompletos o mal formateados"
+    ]);
     exit;
 }
 
 $id = $data['id'];
 $estado = $data['estado'];
-$comentarios = $data['comentarios'] ?? '';
+$comentarios = $data['comentarios'];
 
 try {
-    $sql = "UPDATE usuarios SET estado_solicitud = :estado WHERE id = :id";
-    $stmt = $conn->prepare($sql);
+    // Prepara y ejecuta usando PDO
+    $stmt = $conn->prepare("UPDATE usuarios SET estado = :estado, comentarios = :comentarios WHERE id = :id");
     $stmt->bindParam(':estado', $estado);
-    $stmt->bindParam(':id', $id);
-    $stmt->execute();
+    $stmt->bindParam(':comentarios', $comentarios);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-    echo json_encode(['success' => true, 'message' => 'Estado actualizado correctamente']);
+    if ($stmt->execute()) {
+        echo json_encode([
+            "success" => true,
+            "mensaje" => "Solicitud actualizada correctamente"
+        ]);
+    } else {
+        echo json_encode([
+            "success" => false,
+            "mensaje" => "Error al ejecutar la actualización"
+        ]);
+    }
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Error al actualizar estado']);
+    echo json_encode([
+        "success" => false,
+        "mensaje" => "Error de base de datos: " . $e->getMessage()
+    ]);
 }
 ?>

@@ -96,18 +96,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['usuario'] = $usuarioDB['nombre_usuario'];
     $_SESSION['rol'] = $usuarioDB['rol'];
 
-    // 🔎 Verificar si el usuario ya tiene datos en `aspirantes`
+    // Redirección según el rol
+    if ($usuarioDB['rol'] === 'rh') {
+        header("Location: ../pantallas/dashboard_rh.html");
+        exit;
+    }
+
     $stmt = $conexion->prepare("SELECT id FROM aspirantes WHERE usuario_id = ?");
     $stmt->bind_param("i", $usuario_id);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
     if ($resultado->num_rows > 0) {
-        // 🔥 Si el usuario ya está en `aspirantes`, enviarlo directo a `InfoAsp.html`
         header("Location: ../pantallas/InfoAsp.html");
         exit;
     } else {
-        // 🚀 Si no tiene registro, enviarlo al formulario de inscripción
         header("Location: ../pantallas/RegisterHR.html");
         exit;
     }

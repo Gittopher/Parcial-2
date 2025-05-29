@@ -1,9 +1,7 @@
 <?php
-header("Content-Type: application/json");
 session_start();
-require_once "conexion.php"; // Incluye tu clase de conexión
+require_once "conexion.php"; 
 
-// 🔎 Verificar si el usuario tiene sesión iniciada
 if (!isset($_SESSION['usuario_id'])) {
     echo json_encode(["error" => "Sesión no iniciada."]);
     exit;
@@ -11,7 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario_id = $_SESSION['usuario_id'];
 
-// 🛠️ Consulta preparada para mayor seguridad
+
 $sql = "SELECT nombre, cedula_pasaporte, TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE()) AS edad, 
                nacionalidad, telefono, correo_contacto, estado_civil, genero, residencia, tipo_sangre
         FROM aspirantes WHERE usuario_id = ?";

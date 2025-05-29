@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard RH</title>
-  <link rel="stylesheet" href="/assets/PanelRH.css"/>
+  <link rel="stylesheet" href="../assets/PanelRH.css"/>
 </head>
 <body>
   <header>
@@ -17,6 +17,7 @@
 
     <section class="solicitudes-container">
       <h2>Solicitudes Recibidas</h2>
+      <div id="contenedorSolicitudes" class="contenedor-tarjetas"></div>
     </section>
 
     <!-- Modal para modificar -->
@@ -26,7 +27,6 @@
         <h3>Modificar Solicitud</h3>
         <form id="formModificar">
           <input type="hidden" id="solicitudId" />
-
           <label for="estado">Estado:</label>
           <select id="estado" required>
             <option value="">Seleccione...</option>
@@ -34,16 +34,14 @@
             <option value="No considerado">No Considerado</option>
             <option value="Considerado">Considerado</option>
           </select>
-
           <label for="comentarios">Comentarios:</label>
           <textarea id="comentarios" rows="4"></textarea>
-
           <button type="submit">Guardar Cambios</button>
         </form>
       </div>
     </div>
   </main>
 
-  <script src="O:\PROGRAMACION\DS_VII\DS7_PARCIAL1\Parcial-2\logica\dashboard_RH.js"></script>
+  <script src="../assets/dashboard_RH.js"></script>
 </body>
 </html>

@@ -32,52 +32,44 @@ main {
 }
 
 /* Tabla de solicitudes */
-.solicitudes-container {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 1000px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.solicitudes-container h2 {
-  color: #0056b3;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table th, table td {
-  text-align: left;
+.contenedor-tarjetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre tarjetas */
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  justify-content: flex-start;
 }
 
-table th {
-  background-color: #f0f8ff;
-  color: #0056b3;
+.tarjeta {
+  background-color: #fdfdfd;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px; /* Tamaño fijo de tarjeta */
+  box-sizing: border-box;
 }
 
-/* Botón modificar */
-table button {
-  background: #007BFF;
+.tarjeta h3 {
+  margin-top: 0;
+  color: #007bff;
+}
+
+.tarjeta p {
+  margin: 6px 0;
+}
+
+.tarjeta button {
+  background-color: #007bff;
   color: white;
   border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.1);
 }
 
-table button:hover {
-  background: #0056b3;
+.tarjeta button:hover {
+  background-color: #0056b3;
 }
 
 /* Modal */
