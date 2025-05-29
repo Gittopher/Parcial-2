@@ -1,60 +1,81 @@
 <?php
 session_start();
-require_once '../incluye/conexion.php'; // Conexión a la base de datos
+require_once '../incluye/conexion.php';
 
-// Manejo de Registro de Usuario
+// Inicializar contador de intentos fallidos (protección contra fuerza bruta)
+if (!isset($_SESSION['intentos'])) {
+    $_SESSION['intentos'] = 0;
+}
+
+if ($_SESSION['intentos'] >= 5) {
+    header('Content-Type: application/json');
+    echo json_encode(["error" => "Demasiados intentos fallidos. Intenta en 5 minutos."]);
+    exit;
+}
+
+// Función para limpiar los datos recibidos
+function limpiarEntrada($valor) {
+    return htmlspecialchars(trim($valor));
+}
+
+// Configurar la respuesta en JSON
+header('Content-Type: application/json');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['registro'])) { // Si es un registro
-        $usuario = trim($_POST['usuario']);
-        $correo = trim($_POST['correo']);
-        $password = trim($_POST['password']);
-        $confirmarPassword = trim($_POST['confirmar_password']); // Captura la confirmación de contraseña
-        $rol = $_POST['rol'] ?? 'aspirante';
 
-        // Verificar que las contraseñas coincidan
+    // **Registro**
+    if (isset($_POST['registro'])) {
+        $usuario = limpiarEntrada($_POST['nombre'] ?? '');
+        $correo = limpiarEntrada($_POST['correo'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $confirmarPassword = $_POST['password2'] ?? '';
+
+        // Validaciones
         if ($password !== $confirmarPassword) {
-            echo json_encode(["error" => "Las contraseñas no coinciden"]);
+            echo json_encode(["error" => "Las contraseñas no coinciden."]);
             exit;
         }
 
-        // Validaciones adicionales
         if (empty($usuario) || empty($correo) || empty($password)) {
-            echo json_encode(["error" => "Todos los campos son obligatorios"]);
+            echo json_encode(["error" => "Todos los campos son obligatorios."]);
             exit;
         }
 
         if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-            echo json_encode(["error" => "El correo no es válido"]);
+            echo json_encode(["error" => "Correo electrónico no válido."]);
             exit;
         }
 
-        if (strlen($password) < 6) {
-            echo json_encode(["error" => "La contraseña debe tener al menos 6 caracteres"]);
+        // Validación de contraseña segura
+        if (!preg_match('/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{6,15}$/', $password)) {
+            echo json_encode(["error" => "La contraseña debe tener entre 6 y 15 caracteres, incluir letras, números y símbolos."]);
             exit;
         }
-
-        // Verificar si el usuario ya existe
+        
+        // Evitar duplicados en la base de datos
         $stmt = $conexion->prepare("SELECT id FROM usuarios WHERE nombre_usuario = ? OR correo = ?");
         $stmt->bind_param("ss", $usuario, $correo);
         $stmt->execute();
         $resultado = $stmt->get_result();
 
         if ($resultado->num_rows > 0) {
-            echo json_encode(["error" => "El usuario o correo ya está registrado"]);
+            echo json_encode(["error" => "El usuario o correo ya está registrado."]);
             exit;
         }
 
-        // Encriptar la contraseña antes de guardar
+        // Encriptar contraseña antes de guardarla
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
-        // Insertar usuario en la base de datos
+        // Aquí asumimos que el rol por defecto es 'aspirante' (o lo que quieras)
+        $rol = 'aspirante';
+
         $stmt = $conexion->prepare("INSERT INTO usuarios (nombre_usuario, correo, contrasena, rol) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $usuario, $correo, $passwordHash, $rol);
 
         if ($stmt->execute()) {
-            echo json_encode(["success" => "Usuario registrado correctamente"]);
+            echo json_encode(["success" => "Usuario registrado correctamente."]);
         } else {
-            echo json_encode(["error" => "Error al registrar usuario"]);
+            echo json_encode(["error" => "Error al registrar usuario."]);
         }
 
         $stmt->close();
@@ -62,60 +83,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Lógica de Inicio de Sesión
-    $usuario = trim($_POST['usuario']);
-    $password = trim($_POST['password']);
+    // **Login**
+    $usuario = limpiarEntrada($_POST['usuario'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if (empty($usuario) || empty($password)) {
         echo json_encode(["error" => "Por favor, complete todos los campos."]);
         exit;
     }
 
-    // Buscar el usuario en la tabla `usuarios` por su nombre_usuario y recuperar la contraseña
+    // Buscar usuario en la base de datos
     $stmt = $conexion->prepare("SELECT id, nombre_usuario, contrasena, rol FROM usuarios WHERE nombre_usuario = ?");
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
     $resultado = $stmt->get_result();
 
     if ($resultado->num_rows === 0) {
-        echo json_encode(["error" => "No se encontró el usuario en la base de datos"]);
+        $_SESSION['intentos']++;
+        echo json_encode(["error" => "Usuario no encontrado."]);
         exit;
     }
 
     $usuarioDB = $resultado->fetch_assoc();
     $usuario_id = $usuarioDB['id'];
 
-    // ✅ Verificar contraseña correctamente
+    // Verificación de la contraseña
     if (!password_verify($password, $usuarioDB['contrasena'])) {
+        $_SESSION['intentos']++;
         echo json_encode(["error" => "Contraseña incorrecta."]);
         exit;
     }
 
-    // Establecer sesión
+    // Login exitoso, se guardan los datos de sesión
     $_SESSION['usuario_id'] = $usuario_id;
     $_SESSION['usuario'] = $usuarioDB['nombre_usuario'];
     $_SESSION['rol'] = $usuarioDB['rol'];
+    $_SESSION['intentos'] = 0; // Reset de intentos fallidos
 
-    // Redirección según el rol
-    if ($usuarioDB['rol'] === 'rh') {
-        header("Location: ../pantallas/dashboard_rh.html");
-        exit;
+    // Definir la URL de redirección según el rol
+    $urlRedireccion = "dashboard.php"; // por defecto
+    if ($usuarioDB['rol'] === 'RH') {
+        $urlRedireccion = "dashboardrh.php";
+    } else if ($usuarioDB['rol'] === 'Admin') {
+        $urlRedireccion = "dashboardadmin.php";
     }
+    // Puedes agregar más condiciones según roles
 
-    $stmt = $conexion->prepare("SELECT id FROM aspirantes WHERE usuario_id = ?");
-    $stmt->bind_param("i", $usuario_id);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
+    echo json_encode([
+        "success" => "Login exitoso.",
+        "rol" => $usuarioDB['rol'],
+        "redirect" => $urlRedireccion
+    ]);
 
-    if ($resultado->num_rows > 0) {
-        header("Location: ../pantallas/InfoAsp.html");
-        exit;
-    } else {
-        header("Location: ../pantallas/RegisterHR.html");
-        exit;
-    }
-
-    $stmt->close();
-    $conexion->close();
+    exit;
 }
 ?>

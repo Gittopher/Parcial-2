@@ -1,50 +1,233 @@
-/* Estilo general */
+/* ---------------------------------- */
+/*           RESET BÁSICO             */
+/* ---------------------------------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ---------------------------------- */
+/*          ESTILO DEL BODY          */
+/* ---------------------------------- */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f3f4f6;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-}
-
-/* Contenedor del formulario */
-form {
-    background: white;
+    min-height: 100vh;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: center;
 }
 
-/* Estilo de etiquetas y campos de entrada */
+/* ---------------------------------- */
+/*         FORMULARIO GENERAL        */
+/* ---------------------------------- */
+form {
+    background-color: #ffffff;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Título */
+form h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+/* Etiquetas */
 label {
+    border-color: #000;
     display: block;
-    margin-top: 10px;
+    margin-top: 40px;
+    color: #333;
     font-weight: bold;
 }
 
-input, select {
+/* ---------------------------------- */
+/*         GRUPOS DEL FORMULARIO     */
+/* ---------------------------------- */
+.formulario__grupo {
+    margin-bottom: 15px;
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Estilos para los botones */
-button {
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin-top: 15px;
-    cursor: pointer;
+/* ---------------------------------- */
+/*         CAMPOS DE ENTRADA         */
+/* ---------------------------------- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+.formulario__input {
     width: 100%;
-    border-radius: 5px;
+    min-width: 350px; /* Puedes ajustar este valor */
+    background: #fff;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    height: 50px;
+    padding: 0 12px;
+    transition: 0.3s ease all;
+    font-size: 1rem;
+}
+
+input:focus,
+.formulario__input:focus {
+    border: 3px solid #0075FF;
+    outline: none;
+    box-shadow: 3px 0px 30px rgba(163, 163, 163, 0.4);
+}
+
+/* Estado de error en input */
+input.error-input,
+.formulario__grupo-incorrecto .formulario__input {
+    border: 2px solid red !important;
+}
+
+.formulario__grupo-correcto .formulario__input {
+    border: 2px solid green !important;
+}
+
+/* ---------------------------------- */
+/*        VALIDACIÓN DE ICONOS        */
+/* ---------------------------------- */
+.formulario__validacion-estado {
+    position: absolute;
+    right: 10px;
+    top: 35px;
+    visibility: hidden;
+}
+
+.formulario__grupo-correcto i.fa-check-circle,
+.formulario__grupo-incorrecto i.fa-times-circle {
+    visibility: visible;
+}
+
+/* ---------------------------------- */
+/*        MENSAJES DE ERROR          */
+/* ---------------------------------- */
+.error,
+.formulario__input-error {
+    font-size: 12px;
+    margin-top: 5px;
+    color: red;
+    display: none;
+    text-align: center;
+}
+
+.error-activo,
+.formulario__input-error-activo {
+    display: block;
+}
+
+/* Error debajo del campo */
+.error-validacion {
+    color: #bb2929;
+    font-size: 16px;
+    margin-top: 3px;
+    text-align: center;
+}
+
+/* ---------------------------------- */
+/*             BOTÓN                 */
+/* ---------------------------------- */
+button {
+    height: 45px;
+    line-height: 45px;
+    width: 100%;
+    max-width: 200px;
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: 0.1s ease all;
+    margin-top: 20px;
+    align-self: center;
 }
 
 button:hover {
-    background-color: #0056b3;
+    box-shadow: 3px 0px 30px rgba(163, 163, 163, 1);
+}
+
+/* ---------------------------------- */
+/*             ENLACES               */
+/* ---------------------------------- */
+p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ---------------------------------- */
+/*     MENSAJE GENERAL DE ERROR      */
+/* ---------------------------------- */
+.formulario__mensaje {
+    height: 45px;
+    line-height: 45px;
+    background: #F66060;
+    padding: 0 15px;
+    border-radius: 3px;
+    margin-top: 20px;
+    display: none;
+    color: white;
+    text-align: center;
+}
+
+.formulario__mensaje-activo {
+    display: block;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* ---------------------------------- */
+/*        MENSAJE DE ÉXITO           */
+/* ---------------------------------- */
+.formulario__mensaje-exito {
+    font-size: 14px;
+    color: #119200;
+    display: none;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.formulario__mensaje-exito-activo {
+    display: block;
+    text-align: center;
+}
+
+/* ---------------------------------- */
+/*        RESPONSIVE (MÓVIL)         */
+/* ---------------------------------- */
+@media (max-width: 500px) {
+    form {
+        padding: 20px;
+    }
+
+    input,
+    button,
+    .formulario__input {
+        font-size: 0.95rem;
+    }
 }
