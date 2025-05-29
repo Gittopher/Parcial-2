@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario Recursos Humanos</title>
-    <link rel="stylesheet" href="assets/estilos.css">
+    <link rel="stylesheet" href="../assets/estilos.css">
 </head>
 <body>
     
-<form action="procesar.php" method="POST">
+<form action="http://localhost/Parcial2/logica/procesarAspRH.php" method="POST">
+  <input type="hidden" name="registro" value="true">
+
   <label for="cedula">Cedula:</label>
   <input type="text" name="cedula" id="cedula" required>
 
@@ -80,7 +82,7 @@
 <br>
 
 <label for="teléfono">Teléfono:</label>
-  <input type="text" name="teléfono" id="teléfono" required>
+  <input type="text" name="telefono" id="telefono" required>
 <br>
 
 <label for="residencia">Lugar de Residencia:</label>
@@ -93,7 +95,7 @@
 
 
 <button type="submit">Aplicar</button>
-
+</form>
 
 
 

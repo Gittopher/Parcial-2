@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard RH</title>
+  <link rel="stylesheet" href="PanelRH.css"/>
+</head>
+<body>
+  <header>
+    <h1>Panel de Recursos Humanos</h1>
+    <p>Gestión de Solicitudes de Empleo</p>
+  </header>
+
+  <main>
+    <div id="message" class="message"></div>
+
+    <section class="solicitudes-container">
+      <h2>Solicitudes Recibidas</h2>
+      <div id="contenedorSolicitudes" class="contenedor-tarjetas"></div>
+    </section>
+
+    <!-- Modal para modificar -->
+    <div id="modalModificar" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h3>Modificar Solicitud</h3>
+        <form id="formModificar">
+          <input type="hidden" id="solicitudId" />
+          <input type="hidden" id="nombre" />
+          <input type="hidden" id="apellido" />
+          <label for="estado">Estado:</label>
+          <select id="estado" required>
+            <option value="No evisado">No Revisado</option>
+            <option value="No considerado">No Considerado</option>
+            <option value="Considerado">Considerado</option>
+          </select>
+          <label for="comentarios">Comentarios:</label>
+          <textarea id="comentarios" rows="4"></textarea>
+          <button type="submit">Guardar Cambios</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script src="dashboard_RH.js"></script>
+</body>
+</html>
