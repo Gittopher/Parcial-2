@@ -2,12 +2,13 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("http://localhost/Parcial2/logica/procesarAspirante.php")
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (data.error) {
                 console.error("Error al cargar datos:", data.error);
                 return;
             }
 
-            document.getElementById("nombre").textContent = data.nombre;
+            document.getElementById("nombre").textContent = data.nombre + " " + data.apellido;
             document.getElementById("cedula").textContent = data.cedula_pasaporte;
             document.getElementById("edad").textContent = data.edad + " años";
             document.getElementById("nacionalidad").textContent = data.nacionalidad;

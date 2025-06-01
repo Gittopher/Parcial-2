@@ -1,114 +1,75 @@
 <?php
-header("Content-Type: application/json");
-require_once '/xampp/htdocs/Parcial2/incluye/conexion.php';
 session_start();
-
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    echo json_encode(["error" => "Método no permitido"]);
-    exit;
-}
-
-// Obtener datos JSON
-$datos = json_decode(file_get_contents("php://input"), true);
-
-if (!$datos) {
-    echo json_encode(["error" => "Datos inválidos"]);
-    exit;
-}
-
-$nombre = trim($datos["nombre"] ?? "");
-$cedula = trim($datos["cedula"] ?? "");
-$fecha_nacimiento = trim($datos["fechaNacimiento"] ?? "");
-$nacionalidad = trim($datos["nacionalidad"] ?? "");
-$telefono = trim($datos["telefono"] ?? "");
-$email = trim($datos["email"] ?? "");
-
-// Funciones para validar
-function validar_fecha($fecha) {
-    $d = DateTime::createFromFormat("Y-m-d", $fecha);
-    return $d && $d->format("Y-m-d") === $fecha;
-}
-
-function validar_email($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
-}
-
-function validar_telefono($telefono) {
-    return preg_match('/^\d{7,14}$/', $telefono);
-}
-
-function validar_nombre($nombre) {
-    return preg_match('/^[a-zA-ZÀ-ÿ\s]{1,40}$/', $nombre);
-}
-
-function validar_cedula($cedula) {
-    return preg_match('/^[a-zA-Z0-9\-]{4,30}$/', $cedula);
-}
-
-function validar_nacionalidad($nacionalidad) {
-    return preg_match('/^[a-zA-ZÀ-ÿ\s]{1,40}$/', $nacionalidad);
-}
-
-// Validar campos
-if (
-    !validar_nombre($nombre) ||
-    !validar_cedula($cedula) ||
-    !validar_fecha($fecha_nacimiento) ||
-    !validar_nacionalidad($nacionalidad) ||
-    !validar_telefono($telefono) ||
-    !validar_email($email)
-) {
-    echo json_encode(["error" => "Datos inválidos, por favor revisa los campos."]);
-    exit;
-}
+require_once '/xampp/htdocs/Parcial2/incluye/conexion.php';
 
 if (!isset($_SESSION['usuario_id'])) {
-    echo json_encode(["error" => "Usuario no autenticado"]);
-    exit;
+    die("No se ha iniciado sesión.");
 }
 
-$usuario_id = $_SESSION['usuario_id'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $usuario_id = $_SESSION['usuario_id'];
 
-// Conexión a la base de datos
-$conexion = new mysqli("localhost", "tu_usuario", "tu_contraseña", "registro_aspirantes");
+    // Sanitizar y asignar variables
+    $cedula = trim($_POST['cedula'] ?? '');
+    $nombre = trim($_POST['nombre'] ?? '');
+    $apellido = trim($_POST['apellido'] ?? '');
+    $estado_civil = $_POST['estado_civil'] ?? '';
+    $genero = $_POST['genero'] ?? '';
+    $tipo_sangre = $_POST['tipo_sangre'] ?? '';
+    $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? '';
+    $nacionalidad = trim($_POST['nacionalidad'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
+    $residencia = trim($_POST['residencia'] ?? '');
+    $correo_contacto = trim($_POST['email'] ?? '');
 
-if ($conexion->connect_error) {
-    echo json_encode(["error" => "Error de conexión a la base de datos"]);
-    exit;
-}
+    // Validaciones con expresiones regulares
+    $cedulaValida = preg_match('/^\d{1,2}-\d{1,4}-\d{1,6}$/', $cedula);
+    $nombreValido = preg_match('/^[a-zA-ZÀ-ÿ\s]{1,40}$/', $nombre);
+    $apellidoValido = preg_match('/^[a-zA-ZÀ-ÿ\s]{1,40}$/', $apellido);
+    $telefonoValido = preg_match('/^\d{7,14}$/', $telefono);
+    $emailValido = filter_var($correo_contacto, FILTER_VALIDATE_EMAIL);
 
-// Preparamos la consulta para actualizar
-$sql = "UPDATE aspirantes SET 
-            nombre = ?, 
-            cedula_pasaporte = ?, 
-            fecha_nacimiento = ?, 
-            nacionalidad = ?, 
-            telefono = ?, 
-            correo_contacto = ?
-        WHERE usuario_id = ?";
+    if (
+        empty($nombre) || !$nombreValido ||
+        empty($apellido) || !$apellidoValido ||
+        empty($cedula) || !$cedulaValida ||
+        empty($telefono) || !$telefonoValido ||
+        empty($correo_contacto) || !$emailValido
+    ) {
+        die("Datos inválidos. Por favor revisa los campos ingresados.");
+    }
 
-$stmt = $conexion->prepare($sql);
-if (!$stmt) {
-    echo json_encode(["error" => "Error en la preparación de la consulta"]);
-    exit;
-}
+    // Consulta preparada
+    $sql = "UPDATE aspirantes SET 
+                cedula_pasaporte = ?, nombre = ?, apellido = ?, estado_civil = ?, genero = ?, 
+                tipo_sangre = ?, fecha_nacimiento = ?, nacionalidad = ?, telefono = ?, residencia = ?, 
+                correo_contacto = ?
+            WHERE usuario_id = ?";
 
-$stmt->bind_param(
-    "ssssssi",
-    $nombre,
-    $cedula,
-    $fecha_nacimiento,
-    $nacionalidad,
-    $telefono,
-    $email,
-    $usuario_id
-);
+    $stmt = $conexion->prepare($sql);
 
-if ($stmt->execute()) {
-    echo json_encode(["success" => true]);
+    if (!$stmt) {
+        die("Error en la preparación de la consulta: " . $conexion->error);
+    }
+
+    $stmt->bind_param(
+        "sssssssssssi",
+        $cedula, $nombre, $apellido, $estado_civil, $genero, $tipo_sangre,
+        $fecha_nacimiento, $nacionalidad, $telefono, $residencia,
+        $correo_contacto, $usuario_id
+    );
+
+    if ($stmt->execute()) {
+        header("Location: /Parcial2/pantallas/InfoAsp.html");
+        exit;
+    } else {
+        echo "Error al actualizar: " . $stmt->error;
+    }
+
+    $stmt->close();
 } else {
-    echo json_encode(["error" => "No se pudo actualizar los datos"]);
+    echo "Método no válido.";
 }
 
-$stmt->close();
 $conexion->close();
+?>

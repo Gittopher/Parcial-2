@@ -14,7 +14,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario_id = $_SESSION['usuario_id'];
 
-$sql = "SELECT nombre, cedula_pasaporte, TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE()) AS edad, 
+$sql = "SELECT nombre, apellido, cedula_pasaporte, TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE()) AS edad, 
                nacionalidad, telefono, correo_contacto, estado_civil, genero, residencia, tipo_sangre
         FROM aspirantes WHERE usuario_id = ?";
 
@@ -25,6 +25,12 @@ $resultado = $stmt->get_result();
 
 if ($resultado->num_rows > 0) {
     $datos = $resultado->fetch_assoc();
+
+    // Opcional: controlar si la edad vino como NULL por fecha inválida
+    if (is_null($datos['edad'])) {
+        $datos['edad'] = "No especificada";
+    }
+
     echo json_encode($datos);
 } else {
     echo json_encode(["error" => "No se encontró información."]);

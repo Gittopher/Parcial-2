@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Información del Aspirante</title>
+    <link rel="stylesheet" href="../assets/aspirante.css">
+</head>
+<body>
+    <div class="aspirante-container">
+        <form id="form-actualizar" action="../logica/actualizarAspirante.php" method="post">
+            <div class="aspirante-info">
+                <h1>Actualizar Información del Aspirante</h1>
+
+                <label for="nombre"><strong>Nombre:</strong></label>
+                <input type="text" id="nombre" name="nombre" required>
+                
+                <label for="apellido"><strong>Apellido:</strong></label>
+                <input type="text" id="apellido" name="apellido" required>
+
+
+                <label for="cedula"><strong>Cédula:</strong></label>
+                <input type="text" id="cedula" name="cedula" required>
+
+                <label for="fecha_nacimiento"><strong>Fecha de Nacimiento</strong></label>
+                <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" required>
+
+                <label for="nacionalidad"><strong>Nacionalidad:</strong></label>
+                <input type="text" id="nacionalidad" name="nacionalidad" required>
+
+                <label for="telefono"><strong>Teléfono:</strong></label>
+                <input type="tel" id="telefono" name="telefono" required>
+
+                <label for="email"><strong>Correo:</strong></label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="aspirante-extra">
+                <h2>Más información</h2>
+
+                <label for="estado_civil"><strong>Estado Civil:</strong></label>
+                <select id="estado_civil" name="estado_civil" required>
+                    <option value="">Seleccionar</option>
+                    <option value="Soltero">Soltero</option>
+                    <option value="Casado">Casado</option>
+                    <option value="Divorciado">Divorciado</option>
+                    <option value="Viudo">Viudo</option>
+                </select>
+
+                <label for="genero"><strong>Género:</strong></label>
+                <select id="genero" name="genero" required>
+                    <option value="">Seleccionar</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+
+                <label for="residencia"><strong>Residencia:</strong></label>
+                <input type="text" id="residencia" name="residencia" required>
+
+                <label for="tipo_sangre"><strong>Tipo de Sangre:</strong></label>
+
+                <select name="tipo_sangre" id="tipo_sangre" required>
+                <option value="">-- Selecciona tu tipo de sangre --</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+
+                </select>
+            </div>
+
+            <div class="botones">
+                <button type="submit">Guardar cambios</button>
+                <a href="InfoAsp.html" class="editar-boton">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
