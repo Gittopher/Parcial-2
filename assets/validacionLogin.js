@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputs = document.querySelectorAll('#formLogin input');
 
   const expresiones = {
-    usuario: /^[a-zA-Z0-9_\-]{4,16}$/, // Letras, números, guión y guión bajo (mínimo 4 caracteres)
+    usuario: /^[a-zA-ZÀ-ÿ\s]{4,16}$/,
     password: /^.{4,12}$/ // Contraseña de 4 a 12 caracteres
   };
 
@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     usuario: false,
     password: false
   };
+
+
 
   const validarCampo = (expresion, input, campo) => {
     const grupo = document.getElementById(`grupo__${campo}`);
@@ -70,4 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(error => console.error('Error en la solicitud:', error));
 });
-});
+
+
+function mostrarTransicion() {
+  const formulario = document.getElementById("formulario-login");
+  formulario.classList.add("desaparecer");
+
+  setTimeout(() => {
+    // Redirige o procesa el login
+    window.location.href = "RegisterHR.html"; // por ejemplo
+  }, 1000);
+
+  return false;
+}
+
+
+})// Fin del código
+;// Fin del evento DOMContentLoaded

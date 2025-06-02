@@ -8,9 +8,27 @@ if (!isset($_SESSION['intentos'])) {
 }
 
 if ($_SESSION['intentos'] >= 5) {
-    header('Content-Type: application/json');
-    echo json_encode(["error" => "Demasiados intentos fallidos. Intenta en 5 minutos."]);
+
+
+    $ahora = time();
+
+
+    if(!isset($_SESSION['ultimo_intento'])) {
+        $_SESSION['ultimo_intento'] = $ahora;
+    }
+
+    $diferencia = $ahora - $_SESSION['ultimo_intento'];
+
+    if($diferencia < 300){
+        header('Content-Type: application/json');
+        echo json_encode(["error" => "Demasiados intentos fallidos. Intenta en 5 minutos."]);
     exit;
+
+    } else {
+        // Reiniciar contador de intentos después de 5 minutos
+        $_SESSION['intentos'] = 0;
+        unset($_SESSION['ultimo_intento']);
+    }
 }
 
 // Función para limpiar los datos recibidos
@@ -73,7 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("ssss", $usuario, $correo, $passwordHash, $rol);
 
         if ($stmt->execute()) {
-            echo json_encode(["success" => "Usuario registrado correctamente."]);
+            echo json_encode([
+            "success" => true,
+            "redirect" => "RegisterHR.html"
+            ]);
+            // El frontend debe leer el JSON y hacer window.location.href = data.redirect
         } else {
             echo json_encode(["error" => "Error al registrar usuario."]);
         }
@@ -121,11 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['intentos'] = 0; // Reset de intentos fallidos
 
     // Definir la URL de redirección según el rol
-    $urlRedireccion = "dashboard.php"; // por defecto
+    $urlRedireccion = "RegisterHR.html"; // por defecto
     if ($usuarioDB['rol'] === 'RH') {
         $urlRedireccion = "dashboardrh.php";
-    } else if ($usuarioDB['rol'] === 'Admin') {
-        $urlRedireccion = "dashboardadmin.php";
     }
     // Puedes agregar más condiciones según roles
 

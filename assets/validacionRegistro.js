@@ -17,19 +17,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const validarCampo = (expresion, input, campo) => {
     const grupo = document.getElementById(`grupo__${campo}`);
+    const icono = grupo.querySelector('i');
+    const errorTexto = grupo.querySelector('.formulario__input-error');
+
     if (expresion.test(input.value)) {
       grupo.classList.remove('formulario__grupo-incorrecto');
       grupo.classList.add('formulario__grupo-correcto');
-      grupo.querySelector('i').classList.remove('fa-times-circle');
-      grupo.querySelector('i').classList.add('fa-check-circle');
-      grupo.querySelector('.formulario__input-error').style.display = 'none';
+      if (icono) {
+        icono.classList.remove('fa-times-circle');
+        icono.classList.add('fa-check-circle');
+      }
+      if (errorTexto) errorTexto.style.display = 'none';
       campos[campo] = true;
     } else {
       grupo.classList.add('formulario__grupo-incorrecto');
       grupo.classList.remove('formulario__grupo-correcto');
-      grupo.querySelector('i').classList.add('fa-times-circle');
-      grupo.querySelector('i').classList.remove('fa-check-circle');
-      grupo.querySelector('.formulario__input-error').style.display = 'block';
+      if (icono) {
+        icono.classList.add('fa-times-circle');
+        icono.classList.remove('fa-check-circle');
+      }
+      if (errorTexto) errorTexto.style.display = 'block';
       campos[campo] = false;
     }
   };
@@ -38,12 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputPassword1 = document.getElementById('password');
     const inputPassword2 = document.getElementById('password2');
     const grupo = document.getElementById('grupo__password2');
+    const icono = grupo.querySelector('i');
+    const errorTexto = grupo.querySelector('.formulario__input-error');
 
     if (inputPassword2.value.length === 0) {
-      // No mostrar error si el campo está vacío aún
       grupo.classList.remove('formulario__grupo-incorrecto', 'formulario__grupo-correcto');
-      grupo.querySelector('i').classList.remove('fa-times-circle', 'fa-check-circle');
-      grupo.querySelector('.formulario__input-error').style.display = 'none';
+      if (icono) icono.classList.remove('fa-times-circle', 'fa-check-circle');
+      if (errorTexto) errorTexto.style.display = 'none';
       campos['password2'] = false;
       return;
     }
@@ -51,16 +59,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inputPassword1.value === inputPassword2.value) {
       grupo.classList.remove('formulario__grupo-incorrecto');
       grupo.classList.add('formulario__grupo-correcto');
-      grupo.querySelector('i').classList.remove('fa-times-circle');
-      grupo.querySelector('i').classList.add('fa-check-circle');
-      grupo.querySelector('.formulario__input-error').style.display = 'none';
+      if (icono) {
+        icono.classList.remove('fa-times-circle');
+        icono.classList.add('fa-check-circle');
+      }
+      if (errorTexto) errorTexto.style.display = 'none';
       campos['password2'] = true;
     } else {
       grupo.classList.add('formulario__grupo-incorrecto');
       grupo.classList.remove('formulario__grupo-correcto');
-      grupo.querySelector('i').classList.add('fa-times-circle');
-      grupo.querySelector('i').classList.remove('fa-check-circle');
-      grupo.querySelector('.formulario__input-error').style.display = 'block';
+      if (icono) {
+        icono.classList.add('fa-times-circle');
+        icono.classList.remove('fa-check-circle');
+      }
+      if (errorTexto) errorTexto.style.display = 'block';
       campos['password2'] = false;
     }
   };
@@ -89,12 +101,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   formulario.addEventListener('submit', e => {
-    // Para que pase la validación ambas contraseñas deben coincidir y cumplir longitud
+    e.preventDefault();
+
     if (campos.nombre && campos.password && campos.password2 && campos.correo) {
+      const formData = new FormData(formulario);
+      formData.append('registro', true);
+
+      fetch('../logica/procesarLogin.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.redirect) {
+          window.location.href = `../pantallas/${data.redirect}`;
+        } else if (data.error) {
+          alert(data.error);
+        } else {
+          alert("Ocurrió un error inesperado.");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert("Hubo un problema con el registro.");
+      });
+
       document.getElementById('formulario__mensaje').style.display = 'none';
       document.getElementById('formulario__mensaje-exito').style.display = 'block';
     } else {
-      e.preventDefault();
       document.getElementById('formulario__mensaje').style.display = 'block';
       document.getElementById('formulario__mensaje-exito').style.display = 'none';
     }

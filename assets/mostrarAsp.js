@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            document.getElementById("nombre").textContent = data.nombre;
+            document.getElementById("nombre").textContent = data.nombre + " " + data.apellido;
             document.getElementById("cedula").textContent = data.cedula_pasaporte;
             document.getElementById("edad").textContent = data.edad + " años";
             document.getElementById("nacionalidad").textContent = data.nacionalidad;
@@ -19,4 +19,12 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("tipo_sangre").textContent = data.tipo_sangre;
         })
         .catch(error => console.error("Error en la solicitud:", error));
+
+    // 🚨 Aquí agregamos el evento para redirigir al formulario
+    const editarBtn = document.getElementById("editarBtn");
+    if (editarBtn) {
+        editarBtn.addEventListener("click", function () {
+            window.location.href = "ActualizarinfoAspirante.html"; // Cambia al nombre correcto si es distinto
+        });
+    }
 });
